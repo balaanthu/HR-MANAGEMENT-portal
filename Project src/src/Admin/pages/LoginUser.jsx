@@ -1,0 +1,82 @@
+import React, {useState } from "react";
+import "./LoginUser.css";
+import {Link} from "react-router-dom";
+import "./Signup"
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
+const LoginForm = () =>{
+    const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Perform validation of username and password
+   
+      // Prepare the data to be sent in the POST request
+      const data = {
+        email: email,
+        password: password,
+      };
+      try{
+        const response = await axios.post('http://127.0.0.1:8080/api/v1/auth/authenticate',data)
+        .then((response)=>{
+          console.log(response.data);
+          localStorage.setItem('token',response.data.token);
+          console.log(localStorage.getItem('token'));
+        })      
+        
+        alert("Login Successful.");
+         navigate("/DashboardUser");
+        
+        }
+        catch(error){
+          alert("Invalid Password");
+        }
+      }
+  const isButtonDisabled = !email || !password; // Disable button if username or password is empty
+ 
+
+ 
+    return (
+        <div className="body">
+            
+        <center><div className="cover">
+         <form onSubmit={handleSubmit}>
+            <h1 className="loginhead">Login</h1>
+
+            <div className="row1">
+            <br></br>
+            <br></br>
+            <h3>USERNAME</h3>
+            <br></br>
+           
+            <input type="email" id="email" placeholder="Email-Id" value={email} onChange={(e)=>setEmail(e.target.value)} required/>
+            </div>
+            
+           
+
+             
+             <div className="row1">
+            <br></br>
+            <h3>PASSWORD</h3>
+            <br></br>
+            <input type="password" id="password" placeholder="Password" value={password} onChange={(e)=>setPassword(e.target.value)} required />
+             </div>
+        
+            <br></br>
+            
+            <div className="row1">
+                <br></br>
+            <button type="submit" className="login-btn"disabled={isButtonDisabled} >Login</button>
+            </div><br></br>
+            
+
+        </form>
+        </div></center>
+        </div>
+    )
+}
+export default LoginForm
